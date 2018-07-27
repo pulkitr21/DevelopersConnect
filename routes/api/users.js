@@ -3,6 +3,7 @@ const router =express.Router();
 const gravatar=require('gravatar')
 const bycrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
+const keys=require('../../config/keys');
 
 //Load USer Model
 
@@ -86,10 +87,24 @@ router.post('/login',(req,res)=>{
              .then(isMatch=>{
                  if(isMatch){
                      //user matched
-                     res.json({msg: 'Success'});
+                     //res.json({msg: 'success'});
+
+                     //jwt payload
+                     const payload={id:user.id,name:user.name,avatar:user.avatar}
 
                      //Sign token
-                     jwt.sign();
+                     jwt.sign(payload,
+                         keys.secretOrKey,
+                         {expiresIn:3600},
+                         (err,token)=>{
+                            res.json({
+                                success:true,
+                                token:'Bearer ' + token
+
+                            })
+
+                         }
+                     );
                  }
                  else{
                     return res.status(400).json({msg:"User not found"})
