@@ -1,7 +1,7 @@
 const express=require('express');
 const mongoose=require('mongoose')
 const bodyParser=require('body-parser');
-
+const passport=require('passport');
 const app=express();
 
 //body parser middleware
@@ -23,7 +23,14 @@ mongoose
     .then(()=>{console.log('MongoDB connected')})
     .catch((err)=>console.log(err));
 
+//passport middleware
+app.use(passport.initialize());
 
+//passport config
+
+require('./config/passport')(passport);
+
+app.use()
 app.get('/',(req,res)=>{
     res.send('<h1>Voillaaaaaaaaaa</h1>')
 })
