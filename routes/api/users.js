@@ -5,8 +5,12 @@ const bycrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
 const keys=require('../../config/keys');
 const passport=require('passport');
-//Load USer Model
 
+// Load Input Validation
+const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
+
+//Load USer Model
 const User=require('../../models/User');
 
 //@route GET    api/users/test
@@ -32,6 +36,14 @@ router.get('/test',(req,res)=>{
 //     "__v": 0
 
 router.post('/register',(req,res)=>{
+
+    const { errors, isValid } = validateRegisterInput(req.body);
+
+    // Check Validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
 User.findOne({email:req.body.email})
     .then(user=>{
         if(user){
@@ -72,6 +84,13 @@ User.findOne({email:req.body.email})
 //@access public
 
 router.post('/login',(req,res)=>{
+
+    const { errors, isValid } = validateLoginInput(req.body);
+
+    // Check Validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
 
     const email=req.body.email;
     const password=req.body.password;
@@ -120,7 +139,13 @@ router.post('/login',(req,res)=>{
 //@access Private
 
 router.get('/current',passport.authenticate('jwt',{session:false}),(req,res)=>{
-    res.json({msg:'Success'})
+    res.json({
+
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email
+
+    })
 })
 
 module.exports=router;
