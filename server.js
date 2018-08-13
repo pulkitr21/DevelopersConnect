@@ -34,7 +34,7 @@ app.use('/api/profile', profile);
 app.use('/api/posts', posts);
 
 
-const port=process.env.PORT|| 9889;
+const port=process.env.PORT|| 9888;
 app.listen(port,()=>{
     console.log(`Server is running at http://localhost:${port}`)
 })
